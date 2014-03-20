@@ -1,0 +1,20 @@
+{
+  "name": "Better Wikipedia",
+  "manifest_version": 2,
+  "version": "0.0.1",
+  "description": "Better Wikipedia. Simple.",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.wikipedia.org/*"
+      ],
+      "css": [
+        "better-wikipedia.css"
+      ],
+      "js": [
+        "jquery-2.0.3.js",
+        "better-wikipedia.js"
+      ]
+    }
+  ]
+}
