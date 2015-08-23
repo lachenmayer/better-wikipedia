@@ -1,3 +1,4 @@
+del = require 'del'
 gulp = require 'gulp'
 clean = require 'gulp-clean'
 coffee = require 'gulp-coffee'
@@ -26,5 +27,4 @@ task 'js',
 gulp.task 'default', ['coffee', 'stylus', 'js']
 
 gulp.task 'clean', ->
-  gulp.src 'bin/'
-    .pipe clean read: false
+  del 'bin/'

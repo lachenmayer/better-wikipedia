@@ -1,4 +1,5 @@
 fadeSpeed = 200
+hoverDelay = 500
 
 specialPages = [
   /\/wiki\/Category:.*/
@@ -10,32 +11,51 @@ isSpecialPage = (href) ->
   for pattern in specialPages
     return true if href.match pattern
 
-firstParagraph = ' #mw-content-text > p:first:not(:has(#coordinates))'
+firstParagraphSelector = ' #mw-content-text > p:first:not(:has(#coordinates))'
+
+div = (id) ->
+  element = document.createElement 'div'
+  element.id = id
+  element
 
 class Instant
-  @elem: $('<div id="better-wikipedia-instant"><div id="better-wikipedia-instant-content"></div></div>').hide()
-  @content: @elem.find '#better-wikipedia-instant-content'
-
   @init: ->
-    $('#mw-content-text').append @elem
-    $("#bodyContent a[href^='/wiki']").removeAttr('title')
-    .hover (e) =>
-      return if isSpecialPage e.currentTarget.href
-      @load e.currentTarget.href, => @show e.currentTarget.offsetTop
-    , => @hide()
+    @instantBox = div 'better-wikipedia-instant'
+    @content = div 'better-wikipedia-instant-content'
+    @instantBox.appendChild @content
+    $('#mw-content-text').append @instantBox
+    links = $("#bodyContent a[href^='/wiki']")
+    links.hover @onHoverIn, @onHoverOut
+    # Remove the little yellow hover preview rendered by default.
+    links.removeAttr 'title'
     # hide stray boxes
-    @elem.hover null, => @hide()
+    @instantBox.hover null, @onHoverOut
 
-  @load: (link, loadedFn) ->
-    @content.load link + firstParagraph, loadedFn
+  @onHoverIn: (event) ->
+    link = event.currentTarget
+    return if isSpecialPage link.href
+    firstParagraph = link.href + firstParagraphSelector
+    @content.load firstParagraph, => @showInstantBoxFor link
 
-  @show: (top) ->
-    @elem.fadeIn fadeSpeed
-    @elem.css
-      top: top
+  @onHoverOut: (event) =>
+    link = event.currentTarget
+    @hideInstantBoxFor link
 
-  @hide: ->
-    @elem.fadeOut fadeSpeed
+  @showInstantBoxFor: (link) =>
+    link.setAttribute 'will-preview', 'set by Better Wikipedia extension.'
+    display = =>
+      # The user has already hovered away from the link, so don't do anything.
+      return if not link.hasAttribute 'will-preview'
+      console.log 'show', link
+      link.removeAttribute 'will-preview'
+      @instantBox.fadeIn fadeSpeed
+      @instantBox.css
+        top: link.offsetTop
+    window.setTimeout display, hoverDelay
+
+  @hideInstantBoxFor: (link) =>
+    link.removeAttribute 'will-preview'
+    @instantBox.fadeOut fadeSpeed
 
 class SidePanel
   @elem: $('#mw-panel')

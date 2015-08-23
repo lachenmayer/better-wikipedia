@@ -5,15 +5,11 @@
   "description": "Better Wikipedia. Simple.",
   "dependencies": {},
   "license": "MIT",
-  "scripts": {
-    "build": "./node_modules/.bin/coffeegulp build",
-    "clean": "./node_modules/.bin/coffeegulp clean"
-  },
-  "devDependencies": {
-    "coffeegulp": "0.0.4",
-    "gulp": "~3.5.2",
-    "gulp-coffee": "~1.4.1",
-    "gulp-clean": "~0.2.4",
-    "gulp-stylus": "0.0.13"
+  "dependencies": {
+    "coffee-script": "^1.9.3",
+    "del": "^1.2.1",
+    "gulp": "^3.9.0",
+    "gulp-coffee": "^2.3.1",
+    "gulp-stylus": "^2.0.6"
   }
 }
